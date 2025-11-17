@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammed Reffass | Digital Reality Architect</title>
+
+    <meta name="description" content="Mohammed Reffass - Web & Mobile Developer specializing in transforming complex problems into elegant digital solutions.">
+    <meta property="og:title" content="Mohammed Reffass | Digital Reality Architect">
+    <meta property="og:description" content="Strategic Web & Mobile Developer creating innovative digital experiences">
+    <meta property="og:image" content="https://reffass-mohammed.github.io/og-image.jpg">
+    <meta property="og:url" content="https://reffass-mohammed.github.io">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="overflow-x-hidden">
+
+    <canvas id="dot-canvas"></canvas>
+
+    <div id="content-wrapper" class="relative z-10">
+
+        <div class="loader">
+            <div class="loader-spinner"></div>
+        </div>
+
+        <header id="navbar-header" class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center py-5 px-6 md:px-12 transition-all duration-300">
+            <a href="#" class="logo">
+                <span>&lt;</span>RM<span>/&gt;</span>
+            </a>
+
+            <nav class="hidden md:flex space-x-8">
+                <a href="#about">About</a>
+                <a href="#offer">Services</a>
+                <a href="#skills">Skills</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <a href="mailto:mo.reffass.2004.12.12@gmail.com" class="hidden md:inline-block bg-[#007BFF] text-white px-5 py-2 rounded-full hover:bg-opacity-90 transition-all">
+                Get in Touch
+            </a>
+            <button id="mobile-menu-button" class="md:hidden text-white z-50">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </header>
+
+        <div id="mobile-menu" class="hidden fixed inset-0 bg-[#121212] z-40 flex flex-col items-center justify-center space-y-8">
+            <a href="#about">About</a>
+            <a href="#offer">Services</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+            <a href="mailto:mo.reffass.2004.12.12@gmail.com" class="bg-[#007BFF] text-white px-6 py-3 rounded-full hover:bg-opacity-90 transition-all text-xl mt-4">
+                Get in Touch
+            </a>
+        </div>
+
+        <section id="hero" class="h-screen flex items-center justify-center text-center relative px-4 overflow-hidden">
+            <div class="hero-glow"></div>
+
+            <div class="hero-mockup hidden lg:block">
+                <img src="https://placehold.co/300x550/1a1a1a/007BFF?text=Mobile+Mockup" alt="Mobile Mockup" class="mockup-mobile" loading="lazy">
+                <img src="https://placehold.co/450x300/1a1a1a/007BFF?text=Web+Mockup" alt="Web Mockup" class="mockup-web" loading="lazy">
+            </div>
+
+            <div class="relative z-10 max-w-4xl animate-fade-in lg:mr-[400px]">
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 min-h-[8rem] md:min-h-[10rem] flex items-center justify-center">
+                    <span class="text-glow" id="typing-effect"></span><span class="typing-cursor">|</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10">
+                    I'm Mohammed Reffass, a strategic Web & Mobile Developer transforming complex problems into elegant digital solutions.
+                </p>
+                <a href="#projects" class="bg-white text-gray-900 px-8 py-3 rounded-full text-lg font-medium hover:bg-gray-200 transition-all">
+                    View My Work
+                </a>
+            </div>
+        </section>
+
+        <section id="about" class="py-24 md:py-32 px-6 md:px-12 bg-opacity-5">
+            <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+
+                <div class="glass-panel p-8 rounded-2xl">
+                    <img src="images/mohammed-reffass.jpg" alt="Mohammed Reffass" class="w-full object-cover object-top rounded-lg mb-6" loading="lazy">
+                    <h3 class="text-3xl font-bold text-white mb-4">Mohammed Reffass</h3>
+                    <div class="flex space-x-4 mb-6">
+                        <a href="https://github.com/Reffass-Mohammed" target="_blank" class="social-link">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+                        </a>
+                        <a href="https://www.linkedin.com/in/mohammed-reffass-3730582a9/" target="_blank" class="social-link">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                        </a>
+                    </div>
+                    <a href="#" class="glow-button">Download CV</a>
+                </div>
+
+                <div class="text-gray-300">
+                    <h3 class="text-2xl font-bold text-white mb-3">Who I Am?</h3>
+                    <p class="text-lg mb-6">
+                        I’m Mohammed Reffass, a Web & Mobile Developer with a strong analytical mindset shaped by my background in physics. I enjoy transforming complicated ideas into clean, functional, and user-focused digital products.
+                    </p>
+                    <h3 class="text-2xl font-bold text-white mb-3">What I Do</h3>
+                    <p class="text-lg mb-6">
+                        I build modern web interfaces, mobile apps, and interactive digital experiences. My work combines design clarity, structured thinking, and the ability to turn abstract concepts into working solutions.
+                    </p>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-number">3+</span>
+                            <span class="stat-label">Years of Learning</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">10+</span>
+                            <span class="stat-label">Completed Projects</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">6+</span>
+                            <span class="stat-label">Technologies Mastered</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="offer" class="py-24 md:py-32 px-6 md:px-12">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-16">What I <span class="accent-color text-glow">Offer</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5 0-4.5 16.5" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Web Development</h4>
+                        <p class="text-gray-300">Landing pages (fast & responsive), Admin dashboards (real-time + clean UI), Business websites (SEO-ready).</p>
+                    </div>
+
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75A2.25 2.25 0 0 0 15.75 1.5m-7.5 0v1.5m7.5-1.5v1.5m-7.5 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H18.75m-7.5 0h7.5m-7.5 0-1 0m-5.25 0h-1.5m1.5 0v-1.5m0 1.5v-1.5m0 0v-1.5m2.25 15H12a.75.75 0 0 1 0 1.5H9.75a.75.75 0 0 1 0-1.5Z" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Mobile Apps</h4>
+                        <p class="text-gray-300">Native Android apps (Kotlin) and Cross-platform (Flutter) focused on performance and clean UX.</p>
+                    </div>
+
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm1.5-1.5V6a.75.75 0 0 1 .75-.75h15a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75Z" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">UI Implementation</h4>
+                        <p class="text-gray-300">Pixel-perfect front-end development from your Figma, Sketch, or Adobe XD designs.</p>
+                    </div>
+
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.03-.04-.06-.07-.09-.11a3.375 3.375 0 0 1-1.4-2.49c0-.94.46-1.8 1.21-2.33.75-.53 1.68-.7 2.5-.46 1.05.3 1.9.98 2.33 1.95.43.97.26 2.1-.46 2.95a3.375 3.375 0 0 1-2.49 1.4c-.04.03-.07.06-.11.09h-1.4Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.66 15.84c.03.04.06.07.09.11a3.375 3.375 0 0 0 1.4 2.49c0 .94-.46 1.8-1.21 2.33-.75.53-1.68.7-2.5.46-1.05-.3-1.9-.98-2.33-1.95-.43-.97-.26-2.1.46-2.95a3.375 3.375 0 0 0 2.49-1.4c.04-.03.07-.06.11-.09h1.4Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.34 15.84c-.03.04-.06.07-.09.11a3.375 3.375 0 0 1-1.4 2.49c0 .94.46 1.8 1.21 2.33.75.53 1.68.7 2.5.46 1.05-.3 1.9-.98 2.33-1.95.43-.97.26-2.1-.46-2.95a3.375 3.375 0 0 1-2.49-1.4c-.04-.03-.07-.06-.11-.09h-1.4Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.66 8.16c.03-.04.06-.07.09-.11a3.375 3.375 0 0 0 1.4-2.49c0-.94-.46-1.8-1.21-2.33-.75-.53-1.68-.7-2.5-.46-1.05.3-1.9.98-2.33 1.95-.43.97-.26-2.1.46 2.95a3.375 3.375 0 0 0 2.49 1.4c.04.03.07.06.11.09h1.4Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.34 8.16c-.03-.04-.06-.07-.09-.11a3.375 3.375 0 0 1-1.4-2.49c0-.94.46 1.8 1.21 2.33.75.53 1.68.7 2.5.46 1.05-.3 1.9-.98 2.33-1.95.43-.97.26-2.1-.46-2.95a3.375 3.375 0 0 1-2.49 1.4c-.04.03-.07.06-.11-.09H5.58Z" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Problem Solving</h4>
+                        <p class="text-gray-300">Automation scripts (Python), debugging complex issues, and performance optimization.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-24 md:py-32 px-6 md:px-12 bg-opacity-5">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-16">My <span class="accent-color text-glow">Skillset</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5 0-4.5 16.5" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Web Development</h4>
+                        <p class="text-gray-300">HTML5, CSS3, JavaScript, Bootstrap, TailwindCSS</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75A2.25 2.25 0 0 0 15.75 1.5m-7.5 0v1.5m7.5-1.5v1.5m-7.5 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H18.75m-7.5 0h7.5m-7.5 0-1 0m-5.25 0h-1.5m1.5 0v-1.5m0 1.5v-1.5m0 0v-1.5m2.25 15H12a.75.75 0 0 1 0 1.5H9.75a.75.75 0 0 1 0-1.5Z" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Mobile Development</h4>
+                        <p class="text-gray-300">Kotlin, Android Studio, Flutter</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.485-3.467 4.5-7.75 4.5s-7.75-2.015-7.75-4.5S4.767 1.875 9 1.875m11.25 4.5c0 2.485-3.467 4.5-7.75 4.5S1.25 8.86 1.25 6.375m19 0v11.25c0 2.485-3.467 4.5-7.75 4.5S1.25 20.11 1.25 17.625V6.375" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Backend & Data</h4>
+                        <p class="text-gray-300">PHP, MySQL, SQLite, Python</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-lg flex flex-col items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 accent-color mb-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.83-5.83M11.42 15.17l.02.02m-1.061 1.061L11.42 15.17l-1.06-1.06M11.42 15.17M14.49 8.49l.02.02M17.25 21l-5.83-5.83M14.49 8.49l-5.83-5.83A2.652 2.652 0 0 0 2.83 6.83l5.83 5.83m5.83-5.83.02.02M3 3l3.59 3.59m0 0L9.59 9.59m-3-3L12 12m-3-3L9 9m9-6h.008v.008H18V3Z" />
+                        </svg>
+                        <h4 class="text-xl font-semibold text-white mb-3">Tools & Design</h4>
+                        <p class="text-gray-300">Git & GitHub, VS Code, Figma, UI Implementation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="py-24 md:py-32 px-6 md:px-12">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-16"><span class="accent-color text-glow">Education</span> & Learning</h2>
+                <div class="relative pl-8">
+                    <div class="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-700" style="left: 1px;"></div>
+                    <div class="mb-10 relative">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-white mb-1">💻 Specialized Technician in Digital Development</h3>
+                        <p class="text-lg text-gray-400 mb-2">OFPPT — ISTAG BAB TIZIMI Meknès (2024 — 2026 Expected)</p>
+                        <p class="text-gray-300">Focusing on Mobile Applications Option.</p>
+                    </div>
+                    <div class="mb-10 relative">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-white mb-1">⚛️ University Studies - Physics</h3>
+                        <p class="text-lg text-gray-400 mb-2">Moulay Ismail University, Meknès (2023-2024)</p>
+                        <p class="text-gray-300">Studied in the Faculty of Sciences, Physics Department.</p>
+                    </div>
+                    <div class="relative">
+                        <div class="timeline-dot"></div>
+                        <h3 class="text-2xl font-bold text-white mb-1">🎓 Baccalaureate in Physical Sciences</h3>
+                        <p class="text-lg text-gray-400 mb-2">Lycée Mohamed 5 Meknès (2022-2023)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-24 md:py-32 px-6 md:px-12 bg-opacity-5">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-4">Selected <span class="accent-color text-glow">Projects</span></h2>
+                <p class="text-lg text-gray-400 text-center max-w-2xl mx-auto mb-16">
+                    Here's a glimpse of the ideas I've brought to life. (Note: Full case studies coming soon!)
+                </p>
+                <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="py-24 md:py-32 px-6 md:px-12">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-white text-center mb-16">What Others <span class="accent-color text-glow">Say</span></h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+
+                    <div class="testimonial-card">
+                        <p class="quote-text">
+                            "Mohammed has a sharp eye for detail and a strong commitment to quality. He delivered exactly what we needed, on time and with great communication."
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="https://placehold.co/40x40/333333/007BFF?text=P" alt="Project Partner" class="testimonial-img" loading="lazy">
+                            <div>
+                                <div class="font-bold text-white">Project Partner</div>
+                                <div class="text-sm text-gray-400">Collaborator on a University Project</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <p class="quote-text">
+                            "Working with Mohammed was a breeze. His problem-solving skills are top-notch, and he's always open to feedback. Highly recommend."
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="https://placehold.co/40x40/333333/007BFF?text=S" alt="Fellow Student" class="testimonial-img" loading="lazy">
+                            <div>
+                                <div class="font-bold text-white">Fellow Student</div>
+                                <div class="text-sm text-gray-400">Classmate at ISTAG</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card">
+                        <p class="quote-text">
+                            "I was impressed by the clean code and the responsive design. Mohammed is a reliable developer who truly understands user experience."
+                        </p>
+                        <div class="testimonial-author">
+                            <img src="https://placehold.co/40x40/333333/007BFF?text=M" alt="Professor / Mentor" class="testimonial-img" loading="lazy">
+                            <div>
+                                <div class="font-bold text-white">Professor / Mentor</div>
+                                <div class="text-sm text-gray-400">OFPPT</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-24 md:py-32 px-6 md:px-12">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Let's Build <span class="accent-color text-glow">Together</span></h2>
+                <p class="text-lg text-gray-400 max-w-xl mx-auto mb-10">
+                    Have a project in mind or just want to connect? Let's create something great. I usually reply within 24 hours.
+                </p>
+
+                <form id="contact-form" class="max-w-lg mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <input type="text" placeholder="Your Name" class="form-input" required>
+                        <input type="email" placeholder="Your Email" class="form-input" required>
+                    </div>
+                    <textarea placeholder="Your Message" rows="5" class="form-input w-full mb-6" required></textarea>
+                    
+                    <button type="submit" class="bg-[#007BFF] text-white w-full px-8 py-4 rounded-full text-lg font-medium hover:bg-opacity-90 transition-all">
+                        Send Message
+                    </button>
+                    
+                    <div id="form-success">
+                        Message Sent Successfully ✔<br>
+                        Thank you! In the meantime, feel free to
+                        <a href="mailto:mo.reffass.2004.12.12@gmail.com" class="text-gray-300 underline hover:text-white">email me directly</a>.
+                    </div>
+
+                    <p id="form-note" class="text-sm text-gray-500 mt-4">
+                        Note: Form is visual only. To connect, please
+                        <a href="mailto:mo.reffass.2004.12.12@gmail.com" class="text-gray-300 underline hover:text-white">email me directly</a>.
+                    </p>
+                </form>
+            </div>
+        </section>
+
+        <footer class="py-12 px-6 md:px-12 border-t border-white border-opacity-10">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                <p class="text-gray-400 mb-4 md:mb-0">
+                    &copy; 2025 Mohammed Reffass.
+                </p>
+                <div class="flex space-x-6">
+                    <a href="https://github.com/Reffass-Mohammed" target="_blank" class="text-gray-400 hover:text-[#007BFF] transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/mohammed-reffass-3730582a9/" target="_blank" class="text-gray-400 hover:text-[#007BFF] transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

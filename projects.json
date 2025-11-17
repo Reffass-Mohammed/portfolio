@@ -1,0 +1,20 @@
+[
+  {
+    "imgSrc": "images/coffee-reffass.jpeg",
+    "imgAlt": "CoffeeReffass Project",
+    "tags": ["HTML", "CSS", "Bootstrap", "JavaScript"],
+    "title": "CoffeeReffass - Premium Coffee Experience",
+    "description": "A full responsive website built for a local coffee business with dynamic product pages, clean UI, and smooth animations.",
+    "repoUrl": "https://github.com/Reffass-Mohammed/coffee-beans",
+    "liveUrl": "https://reffass-mohammed.github.io/coffee-beans/"
+  },
+  {
+    "imgSrc": "https://placehold.co/600x400/1a1a1a/007BFF?text=Project+Beta",
+    "imgAlt": "Project Beta",
+    "tags": ["Kotlin", "XML"],
+    "title": "Next project",
+    "description": "Description coming soon...",
+    "repoUrl": "#",
+    "liveUrl": "#"
+  }
+]
