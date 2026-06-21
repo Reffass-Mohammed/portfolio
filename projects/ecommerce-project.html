@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce App | Mohammed Reffass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            color: #E5E7EB;
+            background-image:
+                linear-gradient(rgba(0, 123, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 123, 255, 0.07) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        #dot-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            z-index: 0; opacity: 0.5;
+        }
+
+        .accent { color: #007BFF; }
+        .text-glow { text-shadow: 0 0 12px rgba(0, 123, 255, 0.5); }
+
+        .glass {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+        .glass:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .tag {
+            background-color: rgba(0, 123, 255, 0.15);
+            color: #009FFF;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 99px;
+            display: inline-block;
+        }
+
+        .phone-frame {
+            position: relative;
+            width: 220px;
+            border-radius: 2rem;
+            border: 8px solid #2a2a2a;
+            background: #121212;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .phone-frame img {
+            width: 100%;
+            display: block;
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 10px;
+            background: #2a2a2a;
+            border-radius: 0 0 8px 8px;
+            z-index: 10;
+        }
+
+        .screenshots-track {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 2rem 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #007BFF #1e1e1e;
+            scroll-snap-type: x mandatory;
+        }
+        .screenshots-track::-webkit-scrollbar { height: 4px; }
+        .screenshots-track::-webkit-scrollbar-track { background: #1e1e1e; border-radius: 4px; }
+        .screenshots-track::-webkit-scrollbar-thumb { background: #007BFF; border-radius: 4px; }
+        .screenshots-track .phone-frame { scroll-snap-align: center; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #9CA3AF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #fff; }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .feature-item:last-child { border-bottom: none; }
+        .feature-dot {
+            width: 8px; height: 8px;
+            background: #007BFF;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(0,123,255,0.08);
+            border: 1px solid rgba(0,123,255,0.2);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #E5E7EB;
+            transition: all 0.2s;
+        }
+        .tech-badge:hover {
+            background: rgba(0,123,255,0.15);
+            border-color: rgba(0,123,255,0.4);
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #007BFF;
+            margin-bottom: 0.75rem;
+        }
+
+        .loader {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background:#121212; display:flex; justify-content:center; align-items:center; z-index:9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .loader.hidden { opacity:0; visibility:hidden; }
+        .loader-spinner {
+            width:50px; height:50px;
+            border:3px solid rgba(255,255,255,0.1); border-radius:50%;
+            border-top-color:#007BFF;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        a.logo {
+            font-family: 'Inter', sans-serif; font-size: 1.75rem; font-weight: 700;
+            color: #fff; text-decoration: none; transition: transform 0.3s;
+            display: inline-block;
+        }
+        a.logo span { color: #007BFF; font-weight: 500; }
+        a.logo:hover { transform: scale(1.05); }
+
+        .hero-glow {
+            position: absolute; top:50%; left:50%;
+            transform: translate(-50%,-50%);
+            width: 60vw; height: 60vw;
+            max-width:600px; max-height:600px;
+            background: radial-gradient(circle, rgba(0,123,255,0.08) 0%, transparent 65%);
+            filter: blur(40px); z-index:-1;
+        }
+
+        @media (max-width: 768px) {
+            .phone-frame { width: 160px; border-radius: 1.5rem; border-width: 6px; }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+<canvas id="dot-canvas"></canvas>
+
+<div class="loader"><div class="loader-spinner"></div></div>
+
+<div class="relative z-10">
+
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center py-5 px-6 md:px-12" id="navbar-header" style="transition: background 0.3s, border 0.3s;">
+        <a href="../index.html" class="logo"><span>&lt;</span>RM<span>/&gt;</span></a>
+        <a href="../index.html#projects" class="back-link text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Portfolio
+        </a>
+    </header>
+
+    <!-- Hero -->
+    <section class="min-h-screen flex items-center pt-24 pb-16 px-6 md:px-12 relative overflow-hidden">
+        <div class="hero-glow"></div>
+        <div class="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
+
+            <!-- Left: Info -->
+            <div class="fade-up">
+                <div class="section-label">Flutter · Firebase · Mobile App</div>
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                    E-Commerce<br><span class="accent text-glow">App</span>
+                </h1>
+                <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+                    A full-featured mobile e-commerce application built with Flutter and Firebase. 
+                    Supports authentication, real-time product browsing, cart management, favorites, 
+                    checkout with address & payment methods, and push notifications.
+                </p>
+
+                <div class="flex flex-wrap gap-2 mb-10">
+                    <span class="tag">Flutter</span>
+                    <span class="tag">Dart</span>
+                    <span class="tag">Firebase</span>
+                    <span class="tag">BLoC</span>
+                    <span class="tag">Firestore</span>
+                    <span class="tag">Firebase Auth</span>
+                    <span class="tag">FCM</span>
+                    <span class="tag">Google Sign-In</span>
+                </div>
+
+                <div class="flex items-center gap-3 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/20 text-yellow-400 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Source code is in a private repository. Screenshots and details are shown here.
+                </div>
+            </div>
+
+            <!-- Right: Hero phone mockup -->
+            <div class="flex justify-center fade-up" style="transition-delay: 0.15s;">
+                <div style="position:relative; display:inline-block;">
+                    <div class="phone-frame" style="width:260px; box-shadow: 0 0 60px rgba(103,58,183,0.3), 0 25px 50px rgba(0,0,0,0.5);">
+                        <div class="phone-notch"></div>
+                        <img src="../images/ecommerce-project/s1.png" alt="App Splash Screen" id="hero-phone-img" onerror="this.src='https://placehold.co/260x550/673AB7/ffffff?text=E-Commerce+App'">
+                    </div>
+                    <!-- Floating accent -->
+                    <div style="position:absolute; bottom:-1rem; right:-1.5rem; background:rgba(0,123,255,0.1); border:1px solid rgba(0,123,255,0.3); border-radius:0.75rem; padding:0.75rem 1rem; backdrop-filter:blur(8px);">
+                        <div style="color:#007BFF; font-weight:700; font-size:1.25rem;">Flutter</div>
+                        <div style="color:#9CA3AF; font-size:0.75rem;">+ Firebase</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Carousel -->
+    <section class="py-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="section-label fade-up">App Screens</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 fade-up">Screenshot <span class="accent text-glow">Gallery</span></h2>
+            <p class="text-gray-400 mb-8 fade-up">Scroll through to explore all screens of the app.</p>
+
+            <div class="screenshots-track fade-up">
+                <!-- Splash -->
+                <div class="phone-frame" title="Splash Screen">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s1.png" alt="Splash Screen" onerror="this.src='https://placehold.co/220x460/673AB7/ffffff?text=Splash'">
+                </div>
+                <!-- Notification -->
+                <div class="phone-frame" title="Notification Permission">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s2.png" alt="Notification Permission" onerror="this.src='https://placehold.co/220x460/2d1b5e/ffffff?text=Notifications'">
+                </div>
+                <!-- Login -->
+                <div class="phone-frame" title="Login">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s3.png" alt="Login Screen" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Login'">
+                </div>
+                <!-- Register -->
+                <div class="phone-frame" title="Create Account">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s4.png" alt="Create Account" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Register'">
+                </div>
+                <!-- Home -->
+                <div class="phone-frame" title="Home">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s5.png" alt="Home Screen" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Home'">
+                </div>
+                <!-- Category -->
+                <div class="phone-frame" title="Categories">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s6.png" alt="Categories" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Categories'">
+                </div>
+                <!-- Product Detail -->
+                <div class="phone-frame" title="Product Detail">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s7.png" alt="Product Detail" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Product+Detail'">
+                </div>
+                <!-- Favorites -->
+                <div class="phone-frame" title="My Favorites">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s8.png" alt="My Favorites" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Favorites'">
+                </div>
+                <!-- Cart -->
+                <div class="phone-frame" title="My Cart">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s9.png" alt="My Cart" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Cart'">
+                </div>
+                <!-- Checkout -->
+                <div class="phone-frame" title="Checkout">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s10.png" alt="Checkout" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Checkout'">
+                </div>
+                <!-- Address -->
+                <div class="phone-frame" title="Address">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s11.png" alt="Add Address" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Address'">
+                </div>
+                <!-- Location Select -->
+                <div class="phone-frame" title="Select Location">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s12.png" alt="Select Location" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Location'">
+                </div>
+                <!-- Payment Method empty -->
+                <div class="phone-frame" title="Payment Method">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s13.png" alt="Payment Method" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Payment'">
+                </div>
+                <!-- Add Card -->
+                <div class="phone-frame" title="Add Card">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s14.png" alt="Add Card" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Add+Card'">
+                </div>
+                <!-- Payment Method with card -->
+                <div class="phone-frame" title="Card Selected">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s15.png" alt="Card Selected" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Card+Selected'">
+                </div>
+                <!-- Final Checkout -->
+                <div class="phone-frame" title="Final Checkout">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecommerce-project/s16.png" alt="Final Checkout" onerror="this.src='https://placehold.co/220x460/f3f0fb/333333?text=Final+Checkout'">
+                </div>
+            </div>
+
+            <p class="text-center text-gray-500 text-sm mt-4">← Scroll to see more screens →</p>
+        </div>
+    </section>
+
+    <!-- Features & Tech -->
+    <section class="py-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+
+            <!-- Features -->
+            <div class="glass p-8 fade-up">
+                <div class="section-label">What It Does</div>
+                <h3 class="text-2xl font-bold text-white mb-6">Key Features</h3>
+
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Authentication</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Email/password login & registration + Google Sign-In via Firebase Auth</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Product Browsing</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Home feed with banner slider, categories (Clothes, Bags, Shoes, Groceries…) and product detail pages with size/quantity selection</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Cart & Favorites</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Add items to cart with quantity control, save favorites and remove them with a swipe</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Checkout Flow</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Full checkout: delivery address selection (city-country search), payment card management, order summary with total</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Push Notifications</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Firebase Cloud Messaging integration with runtime permission handling on Android 13+</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Native Splash Screen</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Custom branded splash using flutter_native_splash with a purple theme</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="fade-up" style="transition-delay: 0.1s;">
+                <div class="glass p-8 mb-6">
+                    <div class="section-label">Stack</div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Technologies Used</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-badge">🐦 Flutter 3.x</span>
+                        <span class="tech-badge">🎯 Dart</span>
+                        <span class="tech-badge">🔥 Firebase Auth</span>
+                        <span class="tech-badge">📦 Cloud Firestore</span>
+                        <span class="tech-badge">📬 Firebase Messaging</span>
+                        <span class="tech-badge">🔍 Google Sign-In</span>
+                        <span class="tech-badge">🧱 BLoC (flutter_bloc)</span>
+                        <span class="tech-badge">🖼️ Cached Network Image</span>
+                        <span class="tech-badge">🎠 Carousel Slider</span>
+                        <span class="tech-badge">🧭 Bottom Nav Bar</span>
+                    </div>
+                </div>
+
+                <div class="glass p-8">
+                    <div class="section-label">Architecture</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Design Pattern</h3>
+                    <p class="text-gray-400 leading-relaxed">
+                        The app follows the <span class="text-white font-medium">BLoC (Business Logic Component)</span> pattern 
+                        for state management, cleanly separating UI from business logic. 
+                        Firebase Firestore provides real-time data sync, while Firebase Auth 
+                        handles secure identity management.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screens overview grid -->
+    <section class="py-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto">
+            <div class="section-label fade-up">Screen by Screen</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-10 fade-up">App <span class="accent text-glow">Flow</span></h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 fade-up">
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">🚀</div>
+                    <div class="font-semibold text-white text-sm">Splash Screen</div>
+                    <div class="text-xs text-gray-500 mt-1">Branded purple launch</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">🔐</div>
+                    <div class="font-semibold text-white text-sm">Auth</div>
+                    <div class="text-xs text-gray-500 mt-1">Login / Register / Google</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">🏠</div>
+                    <div class="font-semibold text-white text-sm">Home</div>
+                    <div class="text-xs text-gray-500 mt-1">Banner + New Arrivals</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">🗂️</div>
+                    <div class="font-semibold text-white text-sm">Categories</div>
+                    <div class="text-xs text-gray-500 mt-1">Browse by type</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">📦</div>
+                    <div class="font-semibold text-white text-sm">Product Detail</div>
+                    <div class="text-xs text-gray-500 mt-1">Size, qty, rating, add to cart</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">❤️</div>
+                    <div class="font-semibold text-white text-sm">Favorites</div>
+                    <div class="text-xs text-gray-500 mt-1">Saved items list</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">🛒</div>
+                    <div class="font-semibold text-white text-sm">Cart</div>
+                    <div class="text-xs text-gray-500 mt-1">Items, subtotal, checkout</div>
+                </div>
+                <div class="glass p-5 text-center">
+                    <div class="text-2xl mb-2">💳</div>
+                    <div class="font-semibold text-white text-sm">Checkout</div>
+                    <div class="text-xs text-gray-500 mt-1">Address + Payment + Order</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-24 px-6 md:px-12 text-center">
+        <div class="max-w-2xl mx-auto fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Interested in this <span class="accent text-glow">work?</span></h2>
+            <p class="text-gray-400 mb-10">The repository is private, but I'm happy to discuss the project, code, or architecture in detail.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="../index.html#contact" style="display:inline-block; padding:12px 28px; border-radius:99px; background:#007BFF; color:#fff; font-weight:500; text-decoration:none; box-shadow:0 0 20px rgba(0,123,255,0.4); transition:all 0.3s;">
+                    Get in Touch
+                </a>
+                <a href="../index.html#projects" style="display:inline-block; padding:12px 28px; border-radius:99px; border:1px solid rgba(255,255,255,0.15); color:#E5E7EB; font-weight:500; text-decoration:none; transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(0,123,255,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">
+                    ← All Projects
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/5 text-center text-gray-500 text-sm">
+        <p>© 2026 Mohammed Reffass — Built with passion &amp; code.</p>
+    </footer>
+
+</div>
+
+<script>
+/* Particle Canvas */
+const canvas = document.getElementById('dot-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const count = window.innerWidth > 768 ? 60 : 30;
+
+function init() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    particles = Array.from({length: count}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.5 + 1
+    }));
+}
+
+function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of particles) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(0,123,255,0.5)';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        for (const q of particles) {
+            const d = Math.hypot(p.x - q.x, p.y - q.y);
+            if (d < 120) {
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(0,123,255,0.08)';
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(loop);
+}
+
+init();
+loop();
+window.addEventListener('resize', init);
+
+/* Loader */
+window.addEventListener('load', () => {
+    document.querySelector('.loader').classList.add('hidden');
+});
+
+/* Navbar scroll */
+const nav = document.getElementById('navbar-header');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        nav.style.backgroundColor = 'rgba(18,18,18,0.85)';
+        nav.style.backdropFilter = 'blur(8px)';
+        nav.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+    } else {
+        nav.style.backgroundColor = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = 'none';
+    }
+});
+
+/* Scroll animations */
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

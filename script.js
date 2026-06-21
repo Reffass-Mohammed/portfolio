@@ -297,8 +297,8 @@ async function loadProjects() {
                         ${project.description}
                     </p>
                     <div class="flex space-x-4">
-                        <a href="${project.repoUrl}" target="_blank" class="project-link">View Case Study</a>
-                        <a href="${project.liveUrl}" target="_blank" class="project-link-arrow">
+                        <a href="${project.detailUrl || project.repoUrl}" ${project.detailUrl ? '' : 'target="_blank"'} class="project-link">View Case Study</a>
+                        <a href="${project.detailUrl || project.liveUrl}" ${project.detailUrl ? '' : 'target="_blank"'} class="project-link-arrow">
                             Live Demo <span>&rarr;</span>
                         </a>
                     </div>

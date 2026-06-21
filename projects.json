@@ -9,6 +9,16 @@
     "liveUrl": "https://reffass-mohammed.github.io/coffee-beans/"
   },
   {
+    "imgSrc": "images/splash.png",
+    "imgAlt": "E-Commerce Flutter App",
+    "tags": ["Flutter", "Dart", "Firebase", "BLoC"],
+    "title": "E-Commerce App",
+    "description": "A modern e-commerce app built with Flutter and Firebase featuring auth, product browsing, cart, favorites, checkout with address & payment management.",
+    "repoUrl": "projects/ecommerce-project.html",
+    "liveUrl": "projects/ecommerce-project.html",
+    "detailUrl": "projects/ecommerce-project.html"
+  },
+  {
     "imgSrc": "https://placehold.co/600x400/1a1a1a/007BFF?text=Project+Beta",
     "imgAlt": "Project Beta",
     "tags": ["Kotlin", "XML"],
