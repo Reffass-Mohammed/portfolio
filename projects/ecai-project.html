@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECAI - Exam Correction AI | Mohammed Reffass</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0e12;
+            color: #E5E7EB;
+            background-image:
+                linear-gradient(rgba(103, 58, 183, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(103, 58, 183, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        #dot-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            z-index: 0; opacity: 0.5;
+        }
+
+        .accent { color: #8A2BE2; }
+        .text-glow { text-shadow: 0 0 12px rgba(138, 43, 226, 0.6); }
+
+        .glass {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 1rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+        .glass:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(138, 43, 226, 0.3);
+        }
+
+        .tag {
+            background-color: rgba(138, 43, 226, 0.15);
+            color: #C71585;
+            color: #b366ff;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 99px;
+            display: inline-block;
+        }
+
+        .phone-frame {
+            position: relative;
+            width: 220px;
+            border-radius: 2rem;
+            border: 8px solid #1e1f26;
+            background: #0d0e12;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .phone-frame img {
+            width: 100%;
+            display: block;
+        }
+        .phone-notch {
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 12px;
+            background: #1e1f26;
+            border-radius: 0 0 8px 8px;
+            z-index: 10;
+        }
+
+        .screenshots-track {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 2rem 0.5rem;
+            scrollbar-width: thin;
+            scrollbar-color: #8A2BE2 #15161e;
+            scroll-snap-type: x mandatory;
+        }
+        .screenshots-track::-webkit-scrollbar { height: 6px; }
+        .screenshots-track::-webkit-scrollbar-track { background: #15161e; border-radius: 4px; }
+        .screenshots-track::-webkit-scrollbar-thumb { background: #8A2BE2; border-radius: 4px; }
+        .screenshots-track .phone-frame { scroll-snap-align: center; }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #9CA3AF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: #fff; }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .feature-item:last-child { border-bottom: none; }
+        .feature-dot {
+            width: 8px; height: 8px;
+            background: #8A2BE2;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(138, 43, 226, 0.08);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #E5E7EB;
+            transition: all 0.2s;
+        }
+        .tech-badge:hover {
+            background: rgba(138, 43, 226, 0.15);
+            border-color: rgba(138, 43, 226, 0.4);
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #8A2BE2;
+            margin-bottom: 0.75rem;
+        }
+
+        .loader {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background:#0d0e12; display:flex; justify-content:center; align-items:center; z-index:9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .loader.hidden { opacity:0; visibility:hidden; }
+        .loader-spinner {
+            width:50px; height:50px;
+            border:3px solid rgba(255,255,255,0.1); border-radius:50%;
+            border-top-color:#8A2BE2;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        a.logo {
+            font-family: 'Inter', sans-serif; font-size: 1.75rem; font-weight: 700;
+            color: #fff; text-decoration: none; transition: transform 0.3s;
+            display: inline-block;
+        }
+        a.logo span { color: #8A2BE2; font-weight: 500; }
+        a.logo:hover { transform: scale(1.05); }
+
+        .hero-glow {
+            position: absolute; top:50%; left:50%;
+            transform: translate(-50%,-50%);
+            width: 60vw; height: 60vw;
+            max-width:600px; max-height:600px;
+            background: radial-gradient(circle, rgba(138,43,226,0.1) 0%, transparent 65%);
+            filter: blur(40px); z-index:-1;
+        }
+
+        @media (max-width: 768px) {
+            .phone-frame { width: 160px; border-radius: 1.5rem; border-width: 6px; }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+<canvas id="dot-canvas"></canvas>
+
+<div class="loader"><div class="loader-spinner"></div></div>
+
+<div class="relative z-10">
+
+    <!-- Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center py-5 px-6 md:px-12" id="navbar-header" style="transition: background 0.3s, border 0.3s;">
+        <a href="../index.html" class="logo"><span>&lt;</span>RM<span>/&gt;</span></a>
+        <a href="../index.html#projects" class="back-link text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Portfolio
+        </a>
+    </header>
+
+    <!-- Hero -->
+    <section class="min-h-screen flex items-center pt-24 pb-16 px-6 md:px-12 relative overflow-hidden">
+        <div class="hero-glow"></div>
+        <div class="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
+
+            <!-- Left: Info -->
+            <div class="fade-up">
+                <div class="section-label">Flutter · FastAPI · Mistral AI · EdTech</div>
+                <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                    ECAI<br><span class="accent text-glow">Exam Correction AI</span>
+                </h1>
+                <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+                    An innovative AI-powered academic grading companion. 
+                    Built specifically for teachers, ECAI automates exam transcribing and grading from paper sheets. 
+                    Using a vision-capable LLM and advanced image pre-processing, it extracts handwritten or printed student answers, 
+                    evaluates them against a PDF marking scheme, and generates detailed breakdowns and grades in seconds.
+                </p>
+
+                <div class="flex flex-wrap gap-2 mb-10">
+                    <span class="tag">Flutter</span>
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">Python</span>
+                    <span class="tag">Mistral Vision AI</span>
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">OpenCV</span>
+                    <span class="tag">SQLAlchemy</span>
+                    <span class="tag">Provider</span>
+                </div>
+
+                <div class="flex items-center gap-3 p-4 rounded-xl bg-[#8A2BE2]/10 border border-[#8A2BE2]/20 text-[#cda3ff] text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    Core codebase is hosted in a private repository. Full technical breakdown and app screenshots are shown below.
+                </div>
+            </div>
+
+            <!-- Right: Hero phone mockup -->
+            <div class="flex justify-center fade-up" style="transition-delay: 0.15s;">
+                <div style="position:relative; display:inline-block;">
+                    <div class="phone-frame" style="width:260px; box-shadow: 0 0 60px rgba(138,43,226,0.3), 0 25px 50px rgba(0,0,0,0.6);">
+                        <div class="phone-notch"></div>
+                        <img src="../images/ecai-project/splash.png" alt="ECAI App Splash Screen" id="hero-phone-img" onerror="this.src='https://placehold.co/260x550/6a0dad/ffffff?text=ECAI+App'">
+                    </div>
+                    <!-- Floating badge -->
+                    <div style="position:absolute; bottom:-1rem; right:-1.5rem; background:rgba(138,43,226,0.1); border:1px solid rgba(138,43,226,0.3); border-radius:0.75rem; padding:0.75rem 1rem; backdrop-filter:blur(8px);">
+                        <div style="color:#b366ff; font-weight:700; font-size:1.25rem;">ECAI AI</div>
+                        <div style="color:#9CA3AF; font-size:0.75rem;">FastAPI + Flutter</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Carousel -->
+    <section class="py-20 px-6 md:px-12 bg-black/20">
+        <div class="max-w-6xl mx-auto">
+            <div class="section-label fade-up">Screenshots</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-2 fade-up">Interactive <span class="accent text-glow">Gallery</span></h2>
+            <p class="text-gray-400 mb-8 fade-up">Browse through the end-to-end user workflow of the application.</p>
+
+            <div class="screenshots-track fade-up">
+                <!-- Splash -->
+                <div class="phone-frame" title="Splash Screen">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/splash.png" alt="Splash Screen" onerror="this.src='https://placehold.co/220x460/6a0dad/ffffff?text=Splash'">
+                </div>
+                <!-- Visitor Mode -->
+                <div class="phone-frame" title="Public Visitor Mode">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/visitor.png" alt="Visitor Mode Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Visitor+Mode'">
+                </div>
+                <!-- Login -->
+                <div class="phone-frame" title="Login Page">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/login.jpg" alt="Login Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Login'">
+                </div>
+                <!-- Register -->
+                <div class="phone-frame" title="Register Account">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/register.jpg" alt="Register Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Register'">
+                </div>
+                <!-- Forgot Password -->
+                <div class="phone-frame" title="Forgot Password">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/forgot_password.jpg" alt="Forgot Password Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Forgot+Password'">
+                </div>
+                <!-- Dashboard -->
+                <div class="phone-frame" title="Teacher Dashboard">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/dashboard.jpeg" alt="Dashboard Page" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Dashboard'">
+                </div>
+                <!-- Button Capture answers -->
+                <div class="phone-frame" title="Capture Answers Button">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/btn_capture_answers.jpg" alt="Capture Answers Button" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Capture+Answers'">
+                </div>
+                <!-- Scan step 1 empty -->
+                <div class="phone-frame" title="Step 1: Capture answers">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/step1_empty.jpg" alt="Step 1 Empty" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Capture+Answers'">
+                </div>
+                <!-- Scan step 1 blur check -->
+                <div class="phone-frame" title="Step 1: OpenCV blur check">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/step1_blur_check.jpg" alt="Step 1 Blur Check" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Quality+Check'">
+                </div>
+                <!-- Scan step 1 clear -->
+                <div class="phone-frame" title="Step 1: Cleared images">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/step1_clear_all.jpg" alt="Step 1 Clear All" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=All+Clear'">
+                </div>
+                <!-- Scan step 2 pdf -->
+                <div class="phone-frame" title="Step 2: Upload exam PDF key">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/step2_pdf.jpg" alt="Step 2 PDF key" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Upload+Exam+PDF'">
+                </div>
+                <!-- Scan step 3 link student -->
+                <div class="phone-frame" title="Step 3: Link Student">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/step3_link_student.jpg" alt="Step 3 Link Student" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Link+Student'">
+                </div>
+                <!-- Scan step 3 link exam -->
+                <div class="phone-frame" title="Step 3: Link Exam">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/step3_link_exam.jpg" alt="Step 3 Link Exam" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Link+Exam'">
+                </div>
+                <!-- Correction Ali -->
+                <div class="phone-frame" title="AI Correction Result (Ali)">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/correction_ali.jpg" alt="AI Correction Page" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Correction+Result'">
+                </div>
+                <!-- Dashboard -->
+                <div class="phone-frame" title="Teacher Dashboard">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/dashboard.jpeg" alt="Dashboard Page" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Dashboard'">
+                </div>
+                <!-- Menu Drawer -->
+                <div class="phone-frame" title="Menu Navigation">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/drawer_menu.jpg" alt="Drawer Menu" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Navigation'">
+                </div>
+                
+                <!-- Sujets Empty -->
+                <div class="phone-frame" title="Subjects - Empty State">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/sujets_empty.jpg" alt="Subjects Empty Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Subjects+Empty'">
+                </div>
+                <!-- Sujets List -->
+                <div class="phone-frame" title="Subjects List">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/sujets_list.jpg" alt="Subjects List Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Subjects+List'">
+                </div>
+                <!-- Create Classroom -->
+                <div class="phone-frame" title="Create Classroom">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/create_class.jpg" alt="Create Classroom Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Create+Classroom'">
+                </div>
+                <!-- Classroom empty -->
+                <div class="phone-frame" title="Classroom Detail - Empty State">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/class_detail_empty.jpg" alt="Classroom Detail Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Classroom+Empty'">
+                </div>
+                <!-- Add Student -->
+                <div class="phone-frame" title="Add Student">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/add_student.jpg" alt="Add Student" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Add+Student'">
+                </div>
+                <!-- Create Exam -->
+                <div class="phone-frame" title="Create Exam with PDF key">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/create_exam.jpg" alt="Create Exam" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Create+Exam'">
+                </div>
+                <!-- Correction Reffass -->
+                <div class="phone-frame" title="AI Correction Result (Reffass)">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/correction_reffass.jpg" alt="AI Correction Page 2" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Correction+Result+2'">
+                </div>
+                <!-- Profile -->
+                <div class="phone-frame" title="User Profile">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/profile.jpg" alt="Profile Screen" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Profile'">
+                </div>
+                <!-- Password change -->
+                <div class="phone-frame" title="Change Password">
+                    <div class="phone-notch"></div>
+                    <img src="../images/ecai-project/change_password.jpg" alt="Change Password" onerror="this.src='https://placehold.co/220x460/0d0e12/ffffff?text=Change+Password'">
+                </div>
+            </div>
+
+            <p class="text-center text-gray-500 text-sm mt-4">← Scroll to see the entire workflow from setup to AI grading →</p>
+        </div>
+    </section>
+
+    <!-- Deep Technical Features -->
+    <section class="py-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+
+            <!-- Functional Features -->
+            <div class="glass p-8 fade-up">
+                <div class="section-label">System Capabilities</div>
+                <h3 class="text-2xl font-bold text-white mb-6">Key Features</h3>
+
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Three-Step Scan and Grading Flow</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Captures student answer pages, verifies readability, uploads questions PDF, and associates them with a classroom/student record.</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Real-Time Image Quality Assessment</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Utilizes OpenCV on the backend (Laplacian variance and brightness analysis) to instantly flag blurry or poorly lit images before processing.</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Advanced AI Grading Pipeline</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Converts question key PDFs into images using PyMuPDF (fitz) and packages them with base64 student answer images to feed Mistral's vision model.</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Structured JSON Evaluation Schema</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Generates precise question-by-question grade breakdowns, rounding points to the nearest 0.25 and summarizing comprehensive constructive feedback.</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Visitor / Demo Mode</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Enables users to instantly test the AI's grading power. Upload a question PDF and answer photos to obtain immediate correction reports without registering.</div>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-dot"></div>
+                    <div>
+                        <div class="font-semibold text-white">Roster & Classroom Management</div>
+                        <div class="text-sm text-gray-400 mt-0.5">Full administration suite including subjects CRUD, classroom mapping, roster student registration (with CSV/bulk upload), and progress metrics.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack & Design -->
+            <div class="fade-up" style="transition-delay: 0.1s;">
+                <div class="glass p-8 mb-6">
+                    <div class="section-label">Tech Stack</div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Technologies Used</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tech-badge">📱 Flutter 3.x / Dart</span>
+                        <span class="tech-badge">⚡ FastAPI (Python)</span>
+                        <span class="tech-badge">🔮 Mistral Vision LLM</span>
+                        <span class="tech-badge">🐘 PostgreSQL</span>
+                        <span class="tech-badge">⚙️ OpenCV (Image Check)</span>
+                        <span class="tech-badge">📦 SQLAlchemy (Async ORM)</span>
+                        <span class="tech-badge">📑 PyMuPDF (PDF Render)</span>
+                        <span class="tech-badge">🧱 Provider State Control</span>
+                        <span class="tech-badge">🔑 JWT Authentication</span>
+                        <span class="tech-badge">🖨️ SMTP (Mail Codes)</span>
+                    </div>
+                </div>
+
+                <div class="glass p-8">
+                    <div class="section-label">Architecture</div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Under the Hood</h3>
+                    <p class="text-gray-400 leading-relaxed mb-4">
+                        ECAI is built on a decoupled <span class="text-white font-medium">Client-Server architecture</span>. 
+                        The Flutter client utilizes <span class="text-white font-medium">ChangeNotifier-based State Controllers</span> linked via Provider 
+                        to maintain clean separate UI states.
+                    </p>
+                    <p class="text-gray-400 leading-relaxed">
+                        The Python server processes heavy LLM grading calls asynchronously as <span class="text-white font-medium">FastAPI BackgroundTasks</span>, 
+                        storing file references securely on local disk and updating Postgres asynchronously. 
+                        Mistral Vision integration utilizes JSON mode enforcing predictable, clean schema replies.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI pipeline diagram/cards -->
+    <section class="py-20 px-6 md:px-12 bg-black/10">
+        <div class="max-w-6xl mx-auto">
+            <div class="section-label fade-up">How It Works</div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-10 fade-up">The AI Grading <span class="accent text-glow">Pipeline</span></h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 fade-up">
+                <div class="glass p-6">
+                    <div class="text-3xl mb-3">📸</div>
+                    <div class="font-semibold text-white text-base mb-2">1. Preprocessing</div>
+                    <p class="text-xs text-gray-400 leading-relaxed">OpenCV checks Laplacian variance for blur and measures pixel brightness. Flurry or dark sheets are rejected immediately to guarantee AI accuracy.</p>
+                </div>
+                <div class="glass p-6">
+                    <div class="text-3xl mb-3">📄</div>
+                    <div class="font-semibold text-white text-base mb-2">2. PDF Processing</div>
+                    <p class="text-xs text-gray-400 leading-relaxed">PyMuPDF parses the master exam PDF key, rendering individual pages to high-density PNG arrays to supply legible visual queries.</p>
+                </div>
+                <div class="glass p-6">
+                    <div class="text-3xl mb-3">🤖</div>
+                    <div class="font-semibold text-white text-base mb-2">3. LLM Vision Execution</div>
+                    <p class="text-xs text-gray-400 leading-relaxed">Base64 encoded student copies and rendered PDF key pages are bundled together into the Mistral Vision model via token-aware HTTPX calls.</p>
+                </div>
+                <div class="glass p-6">
+                    <div class="text-3xl mb-3">🎯</div>
+                    <div class="font-semibold text-white text-base mb-2">4. Structured Response</div>
+                    <p class="text-xs text-gray-400 leading-relaxed">The model extracts coordinates, transcribes answers, and applies grading guidelines to produce a strictly structured JSON card, updating student database records.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action -->
+    <section class="py-24 px-6 md:px-12 text-center">
+        <div class="max-w-2xl mx-auto fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Intrigued by <span class="accent text-glow">AI Grading?</span></h2>
+            <p class="text-gray-400 mb-10">While the GitHub repository remains private for academic reasons, I would love to walk you through the system details, database schemas, or prompt templates.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="../index.html#contact" style="display:inline-block; padding:12px 28px; border-radius:99px; background:#8A2BE2; color:#fff; font-weight:500; text-decoration:none; box-shadow:0 0 20px rgba(138,43,226,0.4); transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    Get in Touch
+                </a>
+                <a href="../index.html#projects" style="display:inline-block; padding:12px 28px; border-radius:99px; border:1px solid rgba(255,255,255,0.1); color:#E5E7EB; font-weight:500; text-decoration:none; transition:all 0.3s;" onmouseover="this.style.borderColor='rgba(138,43,226,0.4)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';">
+                    ← All Projects
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/5 text-center text-gray-500 text-sm">
+        <p>© 2026 Mohammed Reffass — Built with passion &amp; code.</p>
+    </footer>
+
+</div>
+
+<script>
+/* Particle Canvas */
+const canvas = document.getElementById('dot-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const count = window.innerWidth > 768 ? 60 : 30;
+
+function init() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    particles = Array.from({length: count}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.5 + 1
+    }));
+}
+
+function loop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const p of particles) {
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(138, 43, 226, 0.4)';
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        for (const q of particles) {
+            const d = Math.hypot(p.x - q.x, p.y - q.y);
+            if (d < 120) {
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(138, 43, 226, 0.05)';
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(q.x, q.y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(loop);
+}
+
+init();
+loop();
+window.addEventListener('resize', init);
+
+/* Loader */
+window.addEventListener('load', () => {
+    document.querySelector('.loader').classList.add('hidden');
+});
+
+/* Navbar scroll */
+const nav = document.getElementById('navbar-header');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        nav.style.backgroundColor = 'rgba(13,14,18,0.85)';
+        nav.style.backdropFilter = 'blur(8px)';
+        nav.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+    } else {
+        nav.style.backgroundColor = 'transparent';
+        nav.style.backdropFilter = 'none';
+        nav.style.borderBottom = 'none';
+    }
+});
+
+/* Scroll animations */
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

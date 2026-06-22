@@ -19,9 +19,19 @@
     "detailUrl": "projects/ecommerce-project.html"
   },
   {
+    "imgSrc": "images/ecai-project/splash.png",
+    "imgAlt": "ECAI - Exam Correction AI",
+    "tags": ["Flutter", "FastAPI", "Mistral AI", "PostgreSQL"],
+    "title": "ECAI - Exam Correction AI",
+    "description": "An end-to-end AI exam grading system. It allows teachers to capture student answer sheets, run OpenCV image quality checks, and automatically grade them with a vision-enabled LLM (Mistral API) against an uploaded PDF question key.",
+    "repoUrl": "projects/ecai-project.html",
+    "liveUrl": "projects/ecai-project.html",
+    "detailUrl": "projects/ecai-project.html"
+  },
+  {
     "imgSrc": "https://placehold.co/600x400/1a1a1a/007BFF?text=Project+Beta",
     "imgAlt": "Project Beta",
-    "tags": ["Kotlin", "XML"],
+    "tags": ["Kotlin", "Jetpack Compose", "Supabase"],
     "title": "Next project",
     "description": "Description coming soon...",
     "repoUrl": "#",
